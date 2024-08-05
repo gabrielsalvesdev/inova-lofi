@@ -1,0 +1,850 @@
+2024-08-05T15:33:41.126Z [info] 
+==========LLM call for step "extractAppSkeleton":==========
+You help the user building a Fiori Elements application described in the user input.
+
+The application typically starts with a ListReport page showing the data of the base entity of the application in a table.
+Details of a specific table row are shown in the ObjectPage. This first ObjectPage is therefore based on the base entity of the application.
+An ObjectPage can contain one or more table sections based on to-many associations of its entity type.
+The details of a table section row can be shown in an another ObjectPage based on the associations target entity.
+
+Your task is to find the entities (with their associations) as well as the ObjectPages (with the associations they use in table sections) described in the user input below.
+
+You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
+
+"JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
+
+For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}
+would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
+Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
+
+Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
+
+Here is the JSON Schema instance your output must adhere to. Include the enclosing markdown codeblock:
+```json
+{
+  "type": "object",
+  "properties": {
+    "entities": {
+      "type": "array",
+      "description": "Define all entities and their associations; entity properties will be determined later",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "UpperCamelCase, no spaces, plural, e.g. 'Orders'"
+          },
+          "label": {
+            "type": "string",
+            "description": "max two words, singular"
+          },
+          "associations": {
+            "type": "array",
+            "description": "Define all associations between entities",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string",
+                  "description": "Points to existing entity, value is entities.name"
+                },
+                "multiplicity": {
+                  "type": "string",
+                  "enum": [
+                    "one",
+                    "many"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "target",
+                "multiplicity"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "labelPlural": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "label",
+          "associations",
+          "labelPlural"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "baseEntity": {
+      "type": "string",
+      "description": "base entity of ListReport page (if present) and first ObjectPage"
+    },
+    "noListReportPage": {
+      "type": "boolean",
+      "description": "true: no ListReport page will generated, e.g. for applications which start with an (input enabled) Object Page to enter data"
+    },
+    "objectPages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "description": "Entity that the ObjectPage is based on, the first ObjectPage is always based on base entity"
+          },
+          "tableSectionsAssociations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "to-many associations of page entity for table sections shown in the ObjectPage"
+          }
+        },
+        "required": [
+          "entityType"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "namespace": {
+      "type": "string",
+      "description": "lowerCamelCase, no spaces allowed"
+    },
+    "applicationName": {
+      "type": "string",
+      "description": "lowerCamelCase, no spaces allowed"
+    }
+  },
+  "required": [
+    "entities",
+    "baseEntity",
+    "objectPages",
+    "namespace",
+    "applicationName"
+  ],
+  "additionalProperties": false
+}
+```
+
+Output ONLY the json contents and try to be as accurate as comprehensive as possible.
+
+<UserInput>
+Joule, por favor, gere o aplicativo SAP Fiori Elements com base no modelo de dados CAP existente, seguindo as instruções fornecidas anteriormente:
+
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades. Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente. Faça ajustes e refinamentos conforme necessário.
+
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code. Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo. Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.
+</UserInput>
+
+----------Response:----------
+{
+  "entities": [
+    {
+      "name": "Genre",
+      "label": "Genre",
+      "associations": [
+        {
+          "name": "stations",
+          "target": "Station",
+          "multiplicity": "many"
+        }
+      ],
+      "labelPlural": "Genres"
+    },
+    {
+      "name": "Station",
+      "label": "Station",
+      "associations": [],
+      "labelPlural": "Stations"
+    }
+  ],
+  "baseEntity": "Genre",
+  "noListReportPage": false,
+  "objectPages": [
+    {
+      "entityType": "Genre",
+      "tableSectionsAssociations": [
+        "stations"
+      ]
+    },
+    {
+      "entityType": "Station",
+      "tableSectionsAssociations": []
+    }
+  ],
+  "namespace": "myApp",
+  "applicationName": "FioriElementsApp"
+}
+2024-08-05T15:33:41.130Z [info] Step "switchBasedOnAppSkeleton": case 0 blocked! Evaluation details:
+ - JSONPath "$.model.applications[0].pages[0]" : [{"type":"ListReport","entityType":"Genre"}]
+2024-08-05T15:33:41.131Z [info] Step "switchBasedOnAppSkeleton": case 1 blocked! Evaluation details:
+ - JSONPath "$.model.applications[0].pages[0].type" : ["ListReport"]
+2024-08-05T15:33:41.131Z [info] Step "switchBasedOnAppSkeleton": no condition met - running default steps
+2024-08-05T15:33:45.968Z [info] 
+==========LLM call for step "extractEntitiesProperties":==========
+You help the user refining the DataModel for a Fiori Elements application described in the user input.
+
+The DataModel consists of the following entities and associations:
+- entity "Genre" (with to-many associations to "Station")
+- entity "Station" (with to-one association to "Genre")
+
+Your task is to find the properties for each entity.
+You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
+
+"JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
+
+For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}
+would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
+Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
+
+Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
+
+Here is the JSON Schema instance your output must adhere to. Include the enclosing markdown codeblock:
+```json
+{
+  "type": "object",
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entityName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "camelCase, no spaces"
+          },
+          "type": {
+            "type": "string",
+            "description": "Allowed values: String(50), Boolean, Integer, Decimal, Double, Date, Time, DateTime, Timestamp; String length can vary - i.e. String(20)"
+          },
+          "key": {
+            "type": "boolean",
+            "description": "max. one optional key per entity, only if this element is a semantic key and can uniquely identify the instance"
+          },
+          "essentialElement": {
+            "type": "boolean",
+            "description": "'true' only if element is marked as essential'"
+          },
+          "additionalInfo": {
+            "type": "string",
+            "description": "All additional information from user input, e.g. user description, example values; also consider referenced parts in the user input"
+          }
+        },
+        "required": [
+          "entityName",
+          "name",
+          "type",
+          "additionalInfo"
+        ],
+        "additionalProperties": false
+      },
+      "description": "At least 5 realistic elements (unless explicitly specified)"
+    }
+  },
+  "required": [
+    "elements"
+  ],
+  "additionalProperties": false
+}
+```
+
+Output ONLY the json contents and try to be as accurate as comprehensive as possible.
+
+<UserInput>
+Joule, por favor, gere o aplicativo SAP Fiori Elements com base no modelo de dados CAP existente, seguindo as instruções fornecidas anteriormente:
+
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades. Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente. Faça ajustes e refinamentos conforme necessário.
+
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code. Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo. Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.
+</UserInput>
+
+----------Response:----------
+{
+  "elements": [
+    {
+      "entityName": "Genre",
+      "name": "image",
+      "type": "String(50)",
+      "key": false,
+      "essentialElement": false,
+      "additionalInfo": "Image URL of the genre"
+    },
+    {
+      "entityName": "Genre",
+      "name": "name",
+      "type": "String(50)",
+      "key": false,
+      "essentialElement": false,
+      "additionalInfo": "Name of the genre"
+    },
+    {
+      "entityName": "Genre",
+      "name": "stations",
+      "type": "Station[]",
+      "key": false,
+      "essentialElement": false,
+      "additionalInfo": "List of related stations"
+    },
+    {
+      "entityName": "Station",
+      "name": "image",
+      "type": "String(50)",
+      "key": false,
+      "essentialElement": false,
+      "additionalInfo": "Image URL of the station"
+    },
+    {
+      "entityName": "Station",
+      "name": "audioStream",
+      "type": "String(50)",
+      "key": false,
+      "essentialElement": false,
+      "additionalInfo": "URL of the audio stream"
+    }
+  ]
+}
+2024-08-05T15:33:49.844Z [info] 
+==========LLM call for step "extractPropertyDetails":==========
+Here is a list of properties with name and description:
+
+Genre_image: Image URL of the genre
+Genre_name: Name of the genre
+Station_image: Image URL of the station
+Station_audioStream: URL of the audio stream
+
+For each property analyze the description.
+
+You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
+
+"JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
+
+For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}
+would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
+Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
+
+Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
+
+Here is the JSON Schema instance your output must adhere to. Include the enclosing markdown codeblock:
+```json
+{
+  "type": "object",
+  "properties": {
+    "properties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "All values mentioned in the description. Those could be possible values or example values. Don't make up or invent any values"
+          },
+          "hasFixedValuesList": {
+            "type": "boolean",
+            "description": "Only limited list of values expected, e.g. elements representing types, statuses, categories, units, organizations"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "properties"
+  ],
+  "additionalProperties": false
+}
+```
+
+Output ONLY the json contents and try to be as accurate as comprehensive as possible.
+
+----------Response:----------
+{
+  "properties": [
+    {
+      "name": "Genre_image",
+      "values": [
+        "Image URL of the genre"
+      ],
+      "hasFixedValuesList": false
+    },
+    {
+      "name": "Genre_name",
+      "values": [
+        "Name of the genre"
+      ],
+      "hasFixedValuesList": false
+    },
+    {
+      "name": "Station_image",
+      "values": [
+        "Image URL of the station"
+      ],
+      "hasFixedValuesList": false
+    },
+    {
+      "name": "Station_audioStream",
+      "values": [
+        "URL of the audio stream"
+      ],
+      "hasFixedValuesList": false
+    }
+  ]
+}
+2024-08-05T15:33:49.845Z [info] Step "switchSimpleOrComplexApp": case 0 blocked! Evaluation details:
+ - JSONPath "$.model.applications[0].pages[2]" : [{"type":"ObjectPage","entityType":"Station","objectPageContent":{"tableSectionAssociations":[]}}]
+ - JSONPath "$.userInput.lineCount" : [23]
+2024-08-05T15:33:49.845Z [info] Step "switchSimpleOrComplexApp": no condition met - running default steps
+2024-08-05T15:33:49.845Z [info] Step "runFlowForComplexApp": workflow "givenSkeletonExtractComplexApp" started
+"
+2024-08-05T15:33:57.190Z [info] 
+==========LLM call for classifier:==========
+The user input below describes a Fiori Elements application with a ListReport page and multiple ObjectPages.
+ListReport page shows the data of the specific business object as a list or table. ObjectPage shows details of a specific business object instance.
+Your task is to classify the lines based on the same business object representation to the following categories, one line can refer only to a single category:
+ - LIST_REPORT_GENRE: line describes the ListReport page for "Genre"
+ - OBJECT_PAGE_GENRE: line describes the ObjectPage for "Genre" with a table of "Station"
+ - OBJECT_PAGE_STATION: line describes the ObjectPage for "Station"
+ - NONE: line is not describing any ListReport page or ObjectPage
+
+Return your findings as csv file with columns "lineContent" and "category"!
+
+<UserInput>
+Joule, por favor, gere o aplicativo SAP Fiori Elements com base no modelo de dados CAP existente, seguindo as instruções fornecidas anteriormente:
+
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades.
+Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente.
+Faça ajustes e refinamentos conforme necessário.
+
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code.
+Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo.
+Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.
+</UserInput>
+
+----------Response:----------
+lineContent,category
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.,LIST_REPORT_GENRE
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.,OBJECT_PAGE_GENRE
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.,OBJECT_PAGE_STATION
+Implemente a navegação entre as páginas.,NONE
+Certifique-se de que a interface do usuário seja responsiva.,NONE
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades.,NONE
+Isso pode incluir:,NONE
+Ajustar o layout e o estilo das páginas.,NONE
+Adicionar recursos adicionais, como filtros e classificação.,NONE
+Personalizar os textos e rótulos.,NONE
+Adicionar ícones e imagens personalizadas.,NONE
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente.,NONE
+Faça ajustes e refinamentos conforme necessário.,NONE
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code.,NONE
+Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.,NONE
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo.,NONE
+Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.,NONE
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.,NONE
+2024-08-05T15:33:57.191Z [info] Step "loopOverPages": looping over 3 entries
+"
+2024-08-05T15:33:57.191Z [info] Step "loopOverPages" index 0: pageType=ListReport, entityType=Genre
+2024-08-05T15:33:57.191Z [info] Step "ifListReportPage": case 0 passed! Evaluation details:
+ - Variable "pageType" : "ListReport"
+2024-08-05T15:34:01.008Z [info] 
+==========LLM call for step "extractListReport":==========
+A Fiori Elements Application has the following pages:
+ - ListReport page for "Genre"
+ - ObjectPage for "Genre"
+ - ObjectPage for "Station"
+
+Available entities with their associations and elements are:
+Entity "Genre"
+   Properties:
+       image: Image URL of the genre
+       name: Name of the genre
+   Associations:
+       stations: association to entity Station
+Entity "Station"
+   Properties:
+       image: Image URL of the station
+       audioStream: URL of the audio stream
+   Associations:
+       genre: association to entity Genre
+
+The user input below describes the details of the ListReport page (i.e. its filters, tables or views with their columns).
+
+Your task is to help the user defining the ListReport page.
+You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
+
+"JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
+
+For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}
+would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
+Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
+
+Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
+
+Here is the JSON Schema instance your output must adhere to. Include the enclosing markdown codeblock:
+```json
+{
+  "type": "object",
+  "properties": {
+    "loadDataOnAppLaunch": {
+      "type": "string",
+      "enum": [
+        "Auto",
+        "Disabled",
+        "Enabled"
+      ],
+      "description": "'Auto': no explicit user input to load the data after start or an explicit user input to set InitialLoad for table to Auto; 'Disabled': An initial load of data does not occur at app start and the user has to actively click the Go button;  'Enabled': An initial load of data occurs automatically after start  (list is visible without pressing the GO Button)."
+    },
+    "tables": {
+      "type": "array",
+      "description": "tables (views) expected in user input",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "baseEntityType": {
+            "type": "string",
+            "description": "base entity type for the table"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "propertyPaths for columns"
+          }
+        },
+        "required": [
+          "title",
+          "baseEntityType",
+          "columns"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "filters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "propertyPaths for filters specified in user input. If not specified, empty array"
+    }
+  },
+  "required": [
+    "tables"
+  ],
+  "additionalProperties": false
+}
+```
+
+Output ONLY the json contents and try to be as accurate as comprehensive as possible.
+
+<UserInput>
+Joule, por favor, gere o aplicativo SAP Fiori Elements com base no modelo de dados CAP existente, seguindo as instruções fornecidas anteriormente:
+
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades.
+Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente.
+Faça ajustes e refinamentos conforme necessário.
+
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code.
+Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo.
+Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.
+</UserInput>
+
+----------Response:----------
+{
+  "loadDataOnAppLaunch": "Auto",
+  "tables": [
+    {
+      "title": "Genre",
+      "id": "GenreList",
+      "baseEntityType": "Genre",
+      "columns": [
+        "image",
+        "name"
+      ]
+    },
+    {
+      "title": "Station",
+      "id": "StationList",
+      "baseEntityType": "Station",
+      "columns": [
+        "image",
+        "audioStream"
+      ]
+    }
+  ],
+  "filters": []
+}
+2024-08-05T15:34:01.009Z [info] Step "loopOverPages" index 1: pageType=ObjectPage, entityType=Genre
+2024-08-05T15:34:01.009Z [info] Step "ifListReportPage": case 0 blocked! Evaluation details:
+ - Variable "pageType" : "ObjectPage"
+2024-08-05T15:34:01.009Z [info] Step "ifListReportPage": no condition met - running default steps
+2024-08-05T15:34:01.009Z [info] Step "extractSingleObjectPageOfMany" SKIPPED: no user input after filter
+2024-08-05T15:34:01.010Z [info] Step "loopOverPages" index 2: pageType=ObjectPage, entityType=Station
+2024-08-05T15:34:01.010Z [info] Step "ifListReportPage": case 0 blocked! Evaluation details:
+ - Variable "pageType" : "ObjectPage"
+2024-08-05T15:34:01.010Z [info] Step "ifListReportPage": no condition met - running default steps
+2024-08-05T15:34:03.610Z [info] 
+==========LLM call for step "extractSingleObjectPageOfMany":==========
+The user input below describes a Fiori Elements Application with the following pages:
+ - ListReport page for "Genre"
+ - ObjectPage for "Genre"
+ - ObjectPage for "Station"
+
+Your task is to find the details of the ObjectPage for "Station".
+This ObjectPage can contain tabs and/or sections which in turn contain fields.
+It contains NO table sections!
+
+The underlying data model allows the following propertyPaths:
+ - image: Image (of Station)
+ - audioStream: Audio Stream (of Station)
+ - genre/image: Image (of single associated Genre)
+ - genre/name: Name (of single associated Genre)
+
+You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
+
+"JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
+
+For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}
+would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
+Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
+
+Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
+
+Here is the JSON Schema instance your output must adhere to. Include the enclosing markdown codeblock:
+```json
+{
+  "type": "object",
+  "properties": {
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isTableSection": {
+            "type": "boolean",
+            "description": "if true, 'fields' represent columns of the table section and propertyPaths need to start with 1:n association"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "propertyPath"
+          }
+        },
+        "required": [
+          "title",
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tabs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "subsections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "list of sections ids relevant for the tab"
+          }
+        },
+        "required": [
+          "title",
+          "id",
+          "subsections"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "sections",
+    "tabs"
+  ],
+  "additionalProperties": false
+}
+```
+
+Output ONLY the json contents and try to be as accurate as comprehensive as possible.
+
+<UserInput>
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades.
+Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente.
+Faça ajustes e refinamentos conforme necessário.
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code.
+Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo.
+Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.
+</UserInput>
+
+----------Response:----------
+{
+  "sections": [
+    {
+      "title": "Station Details",
+      "id": "stationDetails",
+      "isTableSection": false,
+      "fields": [
+        "image",
+        "audioStream"
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "title": "Genre",
+      "id": "genreTab",
+      "subsections": [
+        "genreDetails"
+      ]
+    }
+  ]
+}
+2024-08-05T15:34:03.613Z [info] Step "ifCodeListsPresent": case 0 blocked! Evaluation details:
+ - JSONPath "$.model.entities[*].elements[*].values[*]" : []
+2024-08-05T15:34:10.452Z [info] 
+==========LLM call for data generation:==========
+
+For the following list of entities, create data for the empty CSV files.
+Entity "Genre" - Properties:
+    image: String(50), Image URL of the genre
+    name: String(50), Name of the genre
+
+Entity "Station" - Properties:
+    image: String(50), Image URL of the station
+    audioStream: String(50), URL of the audio stream
+    genre_image: String(50), image of associated Genre
+
+Empty CSV files in json format (only generate content for these files!):
+{"Genre.csv":"image;name","Station.csv":"image;audioStream;genre_image"}
+
+Rules:
+    - Take over the given header line, do not invent new columns!
+    - For a given file, add rows, add '\n' characters before each row but don't break the JSON string
+    - Do not generate rows with same key values, they must be unique!
+    - Make sure that associations match, i.e. a field containing "Name of the associated Customer" must contain an existing Name of entity Customer
+    - Always use ";" as a delimiter in CSV files
+    - The result must be proper JSON format so it can be parsed, don't break JSON strings within, don't add quotes around values.
+    - Create about 5 rows for the first csv, 7 for the second and so on
+    - All values must be realistic with meaningful content, e.g. 'Laptop Screen' and not just placeholder values with incremented numbers like 'Product 1', 'Product 2' etc.
+    
+Use format for values:
+  String(50): string no longer than 50 characters
+    
+
+Example output (Do NOT include in output!):
+```json
+{"Blogs":"blogID;title;description;createdDateTime;views\nBlog1;Tech Blog;A blog about the latest technology trends.;2023-06-27T14:52:23Z;1000\nBlog2;Fashion Blog;Explore the world of fashion and style.;2023-06-27T14:52:23Z;500","Posts":"postID;title;content;publishDate;likes;comments;blogID\n1;The Future of Artificial Intelligence;Artificial intelligence is shaping the future of technology.;2023-06-27;50;10;Blog1
+2;Summer Fashion Trends;Discover the hottest fashion trends for the summer season.;2023-06-27;100;20;Blog2\n3;Must-Have Accessories;10 must-have accessories for the upcoming season;2023-06-27;100;20;Blog2"}
+```
+Output ONLY the json contents for the csv files and try to be as accurate as possible.    
+
+
+
+----------Response:----------
+{"Genre.csv":"image;name\nhttps://example.com/genre1.jpg;Rock\nhttps://example.com/genre2.jpg;Pop\nhttps://example.com/genre3.jpg;Hip Hop\nhttps://example.com/genre4.jpg;Country\nhttps://example.com/genre5.jpg;Electronic","Station.csv":"image;audioStream;genre_image\nhttps://example.com/station1.jpg;https://example.com/stream1.mp3;https://example.com/genre1.jpg\nhttps://example.com/station2.jpg;https://example.com/stream2.mp3;https://example.com/genre2.jpg\nhttps://example.com/station3.jpg;https://example.com/stream3.mp3;https://example.com/genre3.jpg\nhttps://example.com/station4.jpg;https://example.com/stream4.mp3;https://example.com/genre4.jpg\nhttps://example.com/station5.jpg;https://example.com/stream5.mp3;https://example.com/genre5.jpg\nhttps://example.com/station6.jpg;https://example.com/stream6.mp3;https://example.com/genre1.jpg\nhttps://example.com/station7.jpg;https://example.com/stream7.mp3;https://example.com/genre2.jpg"}

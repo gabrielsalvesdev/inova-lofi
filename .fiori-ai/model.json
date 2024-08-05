@@ -1,0 +1,164 @@
+{
+    "namespace": "myApp",
+    "entities": [
+        {
+            "name": "Genre",
+            "label": "Genre",
+            "associations": [
+                {
+                    "name": "stations",
+                    "target": "Station",
+                    "multiplicity": "many",
+                    "backAssociation": "genre"
+                }
+            ],
+            "labelPlural": "Genres",
+            "elements": [
+                {
+                    "name": "ID",
+                    "type": "UUID",
+                    "key": true,
+                    "label": ""
+                },
+                {
+                    "name": "image",
+                    "type": "String(50)",
+                    "label": "Image",
+                    "additionalInfo": "Image URL of the genre",
+                    "key": false,
+                    "essentialElement": false,
+                    "values": [],
+                    "hasFixedValuesList": false
+                },
+                {
+                    "name": "name",
+                    "type": "String(50)",
+                    "label": "Name",
+                    "additionalInfo": "Name of the genre",
+                    "key": false,
+                    "essentialElement": false,
+                    "values": [],
+                    "hasFixedValuesList": false
+                }
+            ]
+        },
+        {
+            "name": "Station",
+            "label": "Station",
+            "associations": [
+                {
+                    "name": "genre",
+                    "target": "Genre",
+                    "multiplicity": "one",
+                    "selfContained": false
+                }
+            ],
+            "labelPlural": "Stations",
+            "elements": [
+                {
+                    "name": "ID",
+                    "type": "UUID",
+                    "key": true,
+                    "label": ""
+                },
+                {
+                    "name": "image",
+                    "type": "String(50)",
+                    "label": "Image",
+                    "additionalInfo": "Image URL of the station",
+                    "key": false,
+                    "essentialElement": false,
+                    "values": [],
+                    "hasFixedValuesList": false
+                },
+                {
+                    "name": "audioStream",
+                    "type": "String(50)",
+                    "label": "Audio Stream",
+                    "additionalInfo": "URL of the audio stream",
+                    "key": false,
+                    "essentialElement": false,
+                    "values": [],
+                    "hasFixedValuesList": false
+                }
+            ]
+        }
+    ],
+    "service": {
+        "name": "myAppSrv",
+        "path": "srv/service.cds"
+    },
+    "applications": [
+        {
+            "pages": [
+                {
+                    "type": "ListReport",
+                    "entityType": "Genre",
+                    "listReportContent": {
+                        "loadDataOnAppLaunch": "Auto",
+                        "tables": [
+                            {
+                                "title": "Genre",
+                                "id": "GenreList",
+                                "baseEntityType": "Genre",
+                                "columns": [
+                                    "image",
+                                    "name"
+                                ]
+                            },
+                            {
+                                "title": "Station",
+                                "id": "StationList",
+                                "baseEntityType": "Genre",
+                                "columns": [
+                                    "stations/image",
+                                    "stations/audioStream"
+                                ]
+                            }
+                        ],
+                        "filters": []
+                    }
+                },
+                {
+                    "type": "ObjectPage",
+                    "entityType": "Genre",
+                    "objectPageContent": {
+                        "tableSectionAssociations": [
+                            "stations"
+                        ],
+                        "sections": [],
+                        "tabs": []
+                    }
+                },
+                {
+                    "type": "ObjectPage",
+                    "entityType": "Station",
+                    "objectPageContent": {
+                        "tableSectionAssociations": [],
+                        "sections": [
+                            {
+                                "title": "Station Details",
+                                "id": "stationDetails",
+                                "isTableSection": false,
+                                "fields": [
+                                    "image",
+                                    "audioStream"
+                                ]
+                            }
+                        ],
+                        "tabs": [
+                            {
+                                "title": "Genre",
+                                "id": "genreTab",
+                                "subsections": [
+                                    "genreDetails"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ],
+            "name": "FioriElementsApp"
+        }
+    ]
+}

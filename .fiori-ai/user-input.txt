@@ -1,0 +1,19 @@
+Joule, por favor, gere o aplicativo SAP Fiori Elements com base no modelo de dados CAP existente, seguindo as instruções fornecidas anteriormente:
+
+Crie uma página de lista para a entidade "Genre", exibindo a imagem e o nome de cada gênero.
+Crie uma página de detalhes para a entidade "Genre", exibindo a imagem do gênero e uma lista das estações relacionadas.
+Crie uma página de detalhes para a entidade "Station", com um player de áudio para reproduzir o stream da estação.
+Implemente a navegação entre as páginas.
+Certifique-se de que a interface do usuário seja responsiva.
+Personalizar a interface do usuário: Após a geração do aplicativo SAP Fiori Elements, você pode personalizar a interface do usuário de acordo com suas necessidades. Isso pode incluir:
+Ajustar o layout e o estilo das páginas.
+Adicionar recursos adicionais, como filtros e classificação.
+Personalizar os textos e rótulos.
+Adicionar ícones e imagens personalizadas.
+Testar e refinar o aplicativo: Teste o aplicativo gerado em diferentes dispositivos e navegadores para garantir que ele seja responsivo e funcione corretamente. Faça ajustes e refinamentos conforme necessário.
+
+Implantar o aplicativo: Quando estiver satisfeito com o aplicativo, você pode implantá-lo em um ambiente de produção usando a plataforma SAP Build Code. Certifique-se de seguir as melhores práticas de implantação e configurar corretamente o ambiente.
+
+Iterar e aprimorar: Após a implantação, continue coletando feedback dos usuários e iterando no aplicativo. Adicione novos recursos, faça melhorias e corrija problemas conforme necessário.
+
+Joule, por favor, prossiga com a geração do aplicativo SAP Fiori Elements e forneça orientações adicionais sobre como personalizar e aprimorar a interface do usuário.

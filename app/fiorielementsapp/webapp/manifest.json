@@ -1,0 +1,168 @@
+{
+    "_version": "1.59.0",
+    "sap.app": {
+        "id": "fiorielementsapp",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.14.2",
+            "toolsId": "f4345229-f823-44e9-b5de-5bf92bf67252"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/odata/v4/my-app-srv/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.122.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "fiorielementsapp.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "config": {},
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "GenreList",
+                    "target": "GenreList"
+                },
+                {
+                    "pattern": "Genre({key}):?query:",
+                    "name": "GenreObjectPage",
+                    "target": "GenreObjectPage"
+                },
+                {
+                    "pattern": "Genre({key})/stations({key2}):?query:",
+                    "name": "StationObjectPage",
+                    "target": "StationObjectPage"
+                }
+            ],
+            "targets": {
+                "GenreList": {
+                    "type": "Component",
+                    "id": "GenreList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Genre",
+                            "variantManagement": "Page",
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tab1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#GenreList"
+                                    },
+                                    {
+                                        "key": "tab2",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#StationList"
+                                    }
+                                ]
+                            },
+                            "navigation": {
+                                "Genre": {
+                                    "detail": {
+                                        "route": "GenreObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "GenreObjectPage": {
+                    "type": "Component",
+                    "id": "GenreObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Genre",
+                            "navigation": {
+                                "stations": {
+                                    "detail": {
+                                        "route": "StationObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "StationObjectPage": {
+                    "type": "Component",
+                    "id": "StationObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Genre/stations"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    }
+}
